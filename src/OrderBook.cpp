@@ -30,8 +30,10 @@ void OrderBook::addOrder(const std::string &symbol, double price, double quantit
 
 void OrderBook::matchOrder(const std::string &symbol) {
     while (!bids[symbol].empty() && !asks[symbol].empty()) {
-        auto bid = *bids[symbol].begin();
-        auto ask = *asks[symbol].begin();
+        auto bidIt = bids[symbol].begin();
+        auto askIt = asks[symbol].begin();
+        auto &bid = *bidIt;
+        auto &ask = *askIt;
 
         if (bid->price >= ask->price) {
             // Determine the quantity to be traded
@@ -47,12 +49,14 @@ void OrderBook::matchOrder(const std::string &symbol) {
 
             // Remove the bid or ask from the book if its quantity is now zero
             if (bid->quantity == 0) {
-                logger.log("Bid order fully matched and removed. Symbol=" + bid->symbol);
-                bids.erase(bids.begin());
+                logger.log("Bid order fully matched and removed. Symbol=" + bid->symbol + ", ID=" +
+                           std::to_string(bid->id));
+                bids[symbol].erase(bidIt);
             }
             if (ask->quantity == 0) {
-                logger.log("Ask order fully matched and removed. Symbol=" + ask->symbol);
-                asks.erase(asks.begin());
+                logger.log("Ask order fully matched and removed. Symbol=" + ask->symbol + ", ID=" +
+                           std::to_string(ask->id));
+                asks[symbol].erase(askIt);
             }
         }
     }
