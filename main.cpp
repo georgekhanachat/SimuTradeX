@@ -1,6 +1,6 @@
 #include <iostream>
 #include <thread>
-#include "OrderBook.cpp"
+#include "OrderBook.h"
 
 
 int main() {
