@@ -1,1 +1,2 @@
 # SimuTradeX
+## Simulate. Trade. Exchange.
