@@ -1,11 +1,11 @@
 #include "OrderBook.h"
 
 void OrderBook::addOrder(const std::string &symbol, double price, double quantity, Side side) {
-    auto order = std::make_shared<Order>(Order(symbol, price, quantity, side));
+    auto order = std::make_shared<Order>(Order(++idNum, symbol, price, quantity, side));
     orderQueue.push(order);
     std::string s = (side == BUY ? "BUY" : "SELL");
-    logger.log("Added " + s + " order: Symbol=" + symbol + ", Price=" + std::to_string(price) + ", Quantity=" +
-               std::to_string(quantity));
+    logger.log("Added " + s + " order: ID=" + std::to_string(order->id) + ", Symbol=" + symbol +
+               ", Price=" + std::to_string(price) + ", Quantity=" + std::to_string(quantity));
 }
 
 
@@ -36,8 +36,8 @@ void OrderBook::matchOrder(const std::string &symbol) {
         if (bid->price >= ask->price) {
             // Determine the quantity to be traded
             double tradeQuantity = std::min(bid->quantity, ask->quantity);
-            logger.log("Matching Orders: " + std::to_string(tradeQuantity) + " units at price " +
-                       std::to_string(bid->price));
+            logger.log("Matching Orders: ID=" + std::to_string(bid->id) + " with ID=" + std::to_string(ask->id) +
+                       ", " + std::to_string(tradeQuantity) + " units at price " + std::to_string(bid->price));
 
             // Update the quantities of the bid and ask
             bid->quantity -= tradeQuantity;
@@ -55,6 +55,21 @@ void OrderBook::matchOrder(const std::string &symbol) {
                 asks.erase(asks.begin());
             }
         }
+    }
+}
+
+void OrderBook::showOrderBook(const std::string &symbol) {
+    logger.log("Order Book for Symbol: " + symbol);
+    logger.log("Buys:");
+    for (const auto &buy: bids[symbol]) {
+        logger.log("ID=" + std::to_string(buy->id) + ", Price=" + std::to_string(buy->price) +
+                   ", Quantity=" + std::to_string(buy->quantity));
+    }
+
+    logger.log("Sells:");
+    for (const auto &sell: asks[symbol]) {
+        logger.log("ID=" + std::to_string(sell->id) + ", Price=" + std::to_string(sell->price) +
+                   ", Quantity=" + std::to_string(sell->quantity));
     }
 }
 
