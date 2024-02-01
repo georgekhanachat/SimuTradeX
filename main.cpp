@@ -1,7 +1,7 @@
 #include <iostream>
 #include <thread>
 #include "OrderBook.h"
-
+#include "Logger.h"
 
 int main() {
     OrderBook orderBook;
@@ -15,7 +15,7 @@ int main() {
         int sideInt;
         Side side;
 
-        std::cout << "Enter order details (symbol, price, quantity, side(0 for BUY, 1 for SELL)) or 'exit' to quit:\n";
+        logger.log("Enter order details (symbol, price, quantity, side(0 for BUY, 1 for SELL)) or 'exit' to quit:");
         std::cin >> symbol;
 
         if (symbol == "exit") {
@@ -28,7 +28,6 @@ int main() {
         orderBook.addOrder(symbol, price, quantity, side);
     }
 
-    // Cleanup
     matchingEngineThread.join();
 
     return 0;

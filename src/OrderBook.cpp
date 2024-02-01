@@ -3,8 +3,9 @@
 void OrderBook::addOrder(const std::string &symbol, double price, double quantity, Side side) {
     auto order = std::make_shared<Order>(Order(symbol, price, quantity, side));
     orderQueue.push(order);
-    std::cout << "Added " << (side == BUY ? "BUY" : "SELL") << " order: Symbol=" << symbol
-              << ", Price=" << price << ", Quantity=" << quantity << std::endl;
+    std::string s = (side == BUY ? "BUY" : "SELL");
+    logger.log("Added " + s + " order: Symbol=" + symbol + ", Price=" + std::to_string(price) + ", Quantity=" +
+               std::to_string(quantity));
 }
 
 
@@ -35,7 +36,8 @@ void OrderBook::matchOrder(const std::string &symbol) {
         if (bid->price >= ask->price) {
             // Determine the quantity to be traded
             double tradeQuantity = std::min(bid->quantity, ask->quantity);
-            std::cout << "Matching Orders: " << tradeQuantity << " units at price " << bid->price << std::endl;
+            logger.log("Matching Orders: " + std::to_string(tradeQuantity) + " units at price " +
+                       std::to_string(bid->price));
 
             // Update the quantities of the bid and ask
             bid->quantity -= tradeQuantity;
@@ -45,13 +47,14 @@ void OrderBook::matchOrder(const std::string &symbol) {
 
             // Remove the bid or ask from the book if its quantity is now zero
             if (bid->quantity == 0) {
-                std::cout << "Bid order fully matched and removed. Symbol=" << bid->symbol << std::endl;
+                logger.log("Bid order fully matched and removed. Symbol=" + bid->symbol);
                 bids.erase(bids.begin());
             }
             if (ask->quantity == 0) {
-                std::cout << "Ask order fully matched and removed. Symbol=" << ask->symbol << std::endl;
+                logger.log("Ask order fully matched and removed. Symbol=" + ask->symbol);
                 asks.erase(asks.begin());
             }
         }
     }
 }
+

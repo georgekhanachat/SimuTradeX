@@ -8,6 +8,7 @@
 #include <queue>
 #include <iostream>
 #include <unordered_map>
+#include "Logger.h"
 
 enum Side {
     BUY,
@@ -43,7 +44,6 @@ private:
     std::unordered_map<std::string, std::set<std::shared_ptr<Order>, std::greater<>>> bids;
     std::unordered_map<std::string, std::set<std::shared_ptr<Order>>> asks;
     std::queue<std::shared_ptr<Order>> orderQueue;
-
 };
 
 #endif //SIMUTRADEX_ORDERBOOK_H
